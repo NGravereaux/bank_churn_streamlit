@@ -1,6 +1,5 @@
 # app.py
 import streamlit as st
-import seaborn as sns
 from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis
 import sys
 print("Python version:", sys.version)
