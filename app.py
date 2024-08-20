@@ -1,17 +1,6 @@
 # app.py
 import streamlit as st
 from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis
-import sys
-print("Python version:", sys.version)
-
-try:
-    import seaborn as sns
-    print("Seaborn is available.")
-except ModuleNotFoundError as e:
-    print("Seaborn not found:", e)
-
-
-print("Import successful!")
 
 
 def main():
@@ -23,7 +12,7 @@ def main():
                             "Data Load & Analysis", "Clean & Format DataFrame", "Univariate Analysis"])
 
     # Load data
-    data_url = 'https://raw.githubusercontent.com/NGravereaux/bank_churn_streamlit/main/bank_churn_prediction_modeling.csv'
+    data_url = './bank_churn_prediction_modeling.csv'
     df, initial_check_summary, data_quality_summary, potential_categorical_from_numerical = load_and_analyze_data(
         data_url)
 

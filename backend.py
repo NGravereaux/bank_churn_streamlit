@@ -4,9 +4,9 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import math
 import plotly.express as px
 import re
+import math
 import statsmodels.api as sm
 import scipy.stats as stats
 import streamlit as st
@@ -15,19 +15,24 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, Or
 from numpy import log1p  # This is used for log transformation
 from scipy.stats.contingency import association, chi2_contingency
 from pandas.plotting import scatter_matrix
-from sklearn.feature_selection import SelectFromModel
-from xgboost import XGBClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, roc_auc_score, precision_recall_curve, roc_curve, make_scorer, auc
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from lightgbm import LGBMClassifier
-from catboost import Pool, CatBoostClassifier
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import RandomOverSampler, SMOTE
-from sklearn.datasets import make_classification
-from sklearn.utils.class_weight import compute_class_weight
+
+# Optional: Conditional import with logging for better debugging
+try:
+    from sklearn.feature_selection import SelectFromModel
+    from sklearn.svm import SVC
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, roc_auc_score, precision_recall_curve, roc_curve, make_scorer, auc
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+except ImportError as e:
+    st.error(f"Error importing some sklearn modules: {e}")
+
+# Function definitions remain unchanged...
+
+# Ensure to define and check your environment, Python version, and package versions
+import sys
+st.write(f"Python version: {sys.version}")
+st.write(f"NumPy version: {np.__version__}")
 
 
 # Function to load and analyze data
