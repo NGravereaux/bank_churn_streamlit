@@ -264,34 +264,34 @@ def univariate_analysis(df_cleaned):
         return fig
 
     # Call all functions and display results in Streamlit
-    st.subheader("3.1. Define Categorical and Numerical Variables")
+    st.subheader("Define Categorical and Numerical Variables")
     st.write(f"Categorical Variables: {df_categorical.columns}.")
     st.write(f"Numerical Variables: {df_numerical.columns}.")
 
     st.subheader(
-        "3.2. Frequency and Proportion Tables for Categorical Variables")
+        "Frequency and Proportion Tables for Categorical Variables")
     frequency_proportion_tables = generate_frequency_proportion_tables(
         df_categorical)
     for col, table in frequency_proportion_tables.items():
         st.write(f"{col}:\n")
         st.table(table)
 
-    st.subheader("3.3. Plot Categorical Barplots")
+    st.subheader("Plot Categorical Barplots")
     st.pyplot(plot_categorical_barplots(df_categorical))
 
-    st.subheader("3.4. Plot Categorical Pie Charts")
+    st.subheader("Plot Categorical Pie Charts")
     st.pyplot(plot_categorical_pie_charts(df_categorical))
 
-    st.subheader("3.5. Summary Statistics for Numerical Variables")
+    st.subheader("Summary Statistics for Numerical Variables")
     summary_stats = summary_statistics(df_numerical)
     st.table(summary_stats)
 
-    st.subheader("3.6. Skewness and Kurtosis for Numerical Variables")
+    st.subheader("Skewness and Kurtosis for Numerical Variables")
     skewness_kurtosis = calculate_skewness_kurtosis(df_numerical)
     st.table(skewness_kurtosis)
 
-    st.subheader("3.7. Plot Histograms for Numerical Variables")
+    st.subheader("Plot Histograms for Numerical Variables")
     st.pyplot(plot_histograms(df_numerical))
 
-    st.subheader("3.8. Plot Boxplots")
+    st.subheader("Plot Boxplots")
     st.pyplot(plot_boxplots(df_numerical))
