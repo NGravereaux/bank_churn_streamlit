@@ -7,7 +7,7 @@ def main():
 
     st.sidebar.title('Navigation')
     page = st.sidebar.radio("Project Process", [
-        "About Project", "Data Load & Analysis", "Clean & Format DataFrame", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building"])
+        "About Project", "Data Load & Analysis", "Clean & Format", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building"])
 
     # Sidebar user information and navigation
     st.sidebar.markdown("&nbsp;")
@@ -89,7 +89,8 @@ def main():
         - 1.4. Assess data quality: datatypes, number and % of unique values and missing values
         - 1.5. Identify categorical variables from numerical formats (less than 20 unique values)
         """)
-
+        # Add a horizontal line divider
+        st.markdown("---")
         # Display initial data analysis results
         st.subheader("Shape of the DataFrame and Duplicate Rows")
         st.write(f"Shape of the DataFrame: {df.shape}")
@@ -104,8 +105,8 @@ def main():
         st.subheader("Potential Categorical Variables from Numerical Columns")
         st.dataframe(potential_categorical_from_numerical)
 
-    elif page == "Clean & Format DataFrame":
-        st.header("2. Clean & Format DataFrame")
+    elif page == "Clean & Format":
+        st.header("2. Clean & Format")
 
         st.markdown("""
         - 2.1. Dealing with Duplicates.
@@ -135,6 +136,9 @@ def main():
         - 3.3. Categorical variables. Barplots
         - 3.4. Categorical variables. Pie charts
                 """)
+
+        # Add a horizontal line divider
+        st.markdown("---")
 
         # Check if df_cleaned is available, if not, clean the data
         if df_cleaned is None:
@@ -167,7 +171,8 @@ def main():
           - 4.3.4. Correlation Heatmaps
           - 4.3.5. QQ Plot
         """)
-
+        # Add a horizontal line divider
+        st.markdown("---")
     elif page == "Feature Engineering":
         st.header("5. Feature Engineering")
 
@@ -177,6 +182,8 @@ def main():
         - 5.3. Check and Remove highly correlated variables: (Pearson correlation coefficient > 0.8).
         - 5.4. Assemble the final dataset (ABT).
         """)
+        # Add a horizontal line divider
+        st.markdown("---")
 
     elif page == "Model Building":
         st.header("6. Model Building")
@@ -191,6 +198,8 @@ def main():
         - 6.7. Hyperparameters Tuning 5 Models with Resampling: CatBoost, Random Forest, XGBoost, LightGBM, Neural Network.
         - 6.8. Plot ROC AUC curve.
         """)
+        # Add a horizontal line divider
+        st.markdown("---")
 
 
 if __name__ == '__main__':
