@@ -1,5 +1,5 @@
 import streamlit as st
-from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis
+from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis, bivariate_analysis1, bivariate_analysis2, bivariate_analysis3
 
 
 def main():
@@ -174,6 +174,27 @@ def main():
         """)
         # Add a horizontal line divider
         st.markdown("---")
+
+        # Check if df_cleaned is available, if not, clean the data
+        if df_cleaned is None:
+            integer_columns = ['age', 'balance', 'has_cr_card',
+                               'is_active_member', 'estimated_salary']
+            df_cleaned, _ = clean_and_format_dataframe(df, integer_columns)
+
+        # Separate categorical and numerical variables
+        df_categorical = df_cleaned[['geography', 'gender', 'tenure',
+                                     'num_of_products', 'has_cr_card', 'is_active_member', 'exited']]
+        df_numerical = df_cleaned[['credit_score',
+                                   'age', 'balance', 'estimated_salary']]
+        df_for_spearman_and_heatmap = df_cleaned[['credit_score', 'age', 'tenure', 'balance',
+                                                  'num_of_products', 'has_cr_card',
+                                                  'is_active_member', 'estimated_salary', 'exited']]
+
+        # Perform bivariate analysis
+        bivariate_analysis1(df_categorical)
+        bivariate_analysis2(df_categorical, df_numerical)
+        bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap)
+
     elif page == "Feature Engineering":
         st.header("5. Feature Engineering")
 

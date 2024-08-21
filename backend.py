@@ -12,9 +12,10 @@ import scipy.stats as stats
 import streamlit as st
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score, GridSearchCV, validation_curve, cross_validate, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, OrdinalEncoder
-from numpy import log1p  # This is used for log transformation
+from numpy import log1p
 from scipy.stats.contingency import association, chi2_contingency
 from pandas.plotting import scatter_matrix
+
 
 # Optional: Conditional import with logging for better debugging
 try:
@@ -27,7 +28,6 @@ try:
 except ImportError as e:
     st.error(f"Error importing some sklearn modules: {e}")
 
-# Function definitions remain unchanged...
 
 # Ensure to define and check your environment, Python version, and package versions
 import sys
@@ -295,3 +295,237 @@ def univariate_analysis(df_cleaned):
 
     st.subheader("Plot Boxplots")
     st.pyplot(plot_boxplots(df_numerical))
+
+
+def bivariate_analysis1(df_categorical):
+    st.header("4.1. Categorical (including Discrete Numerical) vs Categorical")
+    st.subheader("Define Categorical Variables")
+    st.write(f"**Categorical Variables**: {df_categorical.columns.tolist()}")
+
+    # 4.1.1. Chi-square tests for categorical variables
+    def calculate_and_sort_chi2(df_categorical):
+        chi2_results = []
+        for i, col1 in enumerate(df_categorical.columns):
+            for col2 in df_categorical.columns[i+1:]:
+                crosstab_result = pd.crosstab(
+                    df_categorical[col1], df_categorical[col2])
+                try:
+                    chi2_statistic, chi2_p_value, _, _ = chi2_contingency(
+                        crosstab_result)
+                    chi2_results.append({
+                        'Variable 1': col1,
+                        'Variable 2': col2,
+                        'Chi2 Statistic': round(chi2_statistic, 4),
+                        'P-Value': round(chi2_p_value, 4)
+                    })
+                except ValueError:
+                    chi2_results.append({
+                        'Variable 1': col1,
+                        'Variable 2': col2,
+                        'Chi2 Statistic': None,
+                        'P-Value': None
+                    })
+        return pd.DataFrame(chi2_results).sort_values(by='P-Value')
+
+    st.subheader("Chi-square Tests for Categorical Variables")
+    chi2_df = calculate_and_sort_chi2(df_categorical)
+    st.table(chi2_df)
+
+    # 4.1.2. Cramér's V calculation for categorical variables
+    def calculate_cramers_v_for_all_pairs(df_categorical):
+        def cramers_v(crosstab):
+            chi2_statistic, _, _, _ = chi2_contingency(crosstab)
+            n = crosstab.sum().sum()
+            phi2 = chi2_statistic / n
+            r, k = crosstab.shape
+            return np.sqrt(phi2 / min(k-1, r-1))
+
+        cramers_v_results = []
+        for i, col1 in enumerate(df_categorical.columns):
+            for col2 in df_categorical.columns[i+1:]:
+                crosstab_result = pd.crosstab(
+                    df_categorical[col1], df_categorical[col2])
+                cramers_v_value = cramers_v(crosstab_result)
+                cramers_v_results.append({
+                    "Variable Pair": f"{col1} vs {col2}",
+                    "Cramér's V": cramers_v_value
+                })
+
+        return pd.DataFrame(cramers_v_results).sort_values(by="Cramér's V", ascending=False)
+
+    st.subheader("Cramér's V for Categorical Variables")
+    df_cramers_v_results = calculate_cramers_v_for_all_pairs(df_categorical)
+    st.table(df_cramers_v_results)
+
+    # 4.1.3. Stacked bar chart visualization for categorical variables
+    def plot_stacked_bar_charts_for_all_pairs(df_categorical):
+        num_plots = len(df_categorical.columns) * \
+            (len(df_categorical.columns) - 1) // 2
+        num_cols = 3
+        num_rows = (num_plots // num_cols) + (num_plots % num_cols > 0)
+        fig, axes = plt.subplots(
+            num_rows, num_cols, figsize=(20, num_rows * 5))
+        axes = axes.flatten()
+
+        plot_idx = 0
+        for i, col1 in enumerate(df_categorical.columns):
+            for col2 in df_categorical.columns[i+1:]:
+                ax = axes[plot_idx]
+                crosstab_result = pd.crosstab(
+                    df_categorical[col1], df_categorical[col2])
+                crosstab_result.plot(kind="bar", stacked=True, ax=ax)
+                ax.set_title(f'Stacked Bar Chart of {col1} vs {col2}')
+                ax.set_xlabel(col1)
+                ax.set_ylabel('Count')
+                ax.tick_params(axis='x', rotation=45)
+                plot_idx += 1
+
+        # Hide any unused subplots
+        for j in range(plot_idx, len(axes)):
+            axes[j].set_visible(False)
+
+        plt.tight_layout()
+        return fig
+
+    st.subheader("Stacked Bar Charts for Categorical Variables")
+    fig = plot_stacked_bar_charts_for_all_pairs(df_categorical)
+    st.pyplot(fig)
+
+
+def bivariate_analysis2(df_categorical, df_numerical):
+    st.header("4.2. Categorical vs Continuous")
+
+    # 4.2.1. Violin plot visualization for categorical vs numerical variables
+    def plot_violin_plots(df_categorical, df_numerical):
+        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
+        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
+        fig, axes = plt.subplots(
+            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
+        axes = axes.flatten()
+
+        plot_index = 0
+        for cat_col in df_categorical.columns:
+            for num_col in df_numerical.columns:
+                sns.violinplot(
+                    x=df_categorical[cat_col], y=df_numerical[num_col], ax=axes[plot_index])
+                axes[plot_index].set_title(
+                    f'Violin Plot: {num_col} by {cat_col}')
+                plot_index += 1
+
+        for i in range(plot_index, len(axes)):
+            axes[i].set_visible(False)
+
+        plt.tight_layout()
+        return fig
+
+    st.subheader("Violin Plots for Categorical vs Numerical Variables")
+    fig = plot_violin_plots(df_categorical, df_numerical)
+    st.pyplot(fig)
+
+    # 4.2.2. Bar chart visualization for categorical vs numerical variables
+    def plot_bar_charts(df_categorical, df_numerical):
+        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
+        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
+        fig, axes = plt.subplots(
+            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
+        axes = axes.flatten()
+
+        plot_index = 0
+        for cat_col in df_categorical.columns:
+            for num_col in df_numerical.columns:
+                sns.barplot(
+                    x=df_categorical[cat_col], y=df_numerical[num_col], ci=None, ax=axes[plot_index])
+                axes[plot_index].set_title(
+                    f'Bar Chart: {num_col} by {cat_col}')
+                plot_index += 1
+
+        for i in range(plot_index, len(axes)):
+            axes[i].set_visible(False)
+
+        plt.tight_layout()
+        return fig
+
+    st.subheader("Bar Charts for Categorical vs Numerical Variables")
+    fig = plot_bar_charts(df_categorical, df_numerical)
+    st.pyplot(fig)
+
+    # 4.2.3. Box plot visualization for categorical vs numerical variables
+    def plot_box_plots(df_categorical, df_numerical):
+        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
+        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
+        fig, axes = plt.subplots(
+            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
+        axes = axes.flatten()
+
+        plot_index = 0
+        for cat_col in df_categorical.columns:
+            for num_col in df_numerical.columns:
+                sns.boxplot(
+                    x=df_categorical[cat_col], y=df_numerical[num_col], ax=axes[plot_index])
+                axes[plot_index].set_title(f'Box Plot: {num_col} by {cat_col}')
+                plot_index += 1
+
+        for i in range(plot_index, len(axes)):
+            axes[i].set_visible(False)
+
+        plt.tight_layout()
+        return fig
+
+    st.subheader(
+        "Side-by-Side Box Plots for Categorical vs Numerical Variables")
+    fig = plot_box_plots(df_categorical, df_numerical)
+    st.pyplot(fig)
+
+
+def bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap):
+    st.header("4.3. Continuous vs Continuous")
+
+    # 4.3.1. Pearson correlation calculation and display
+    def calculate_pearson_correlations(df):
+        correlations = []
+        for i, col1 in enumerate(df.columns):
+            for col2 in df.columns[i+1:]:
+                correlation = df[col1].corr(df[col2])
+                correlations.append((col1, col2, correlation))
+        correlation_df = pd.DataFrame(
+            correlations, columns=['Variable 1', 'Variable 2', 'Correlation'])
+        sorted_correlation_df = correlation_df.sort_values(
+            by='Correlation', ascending=False)
+        return sorted_correlation_df
+
+    st.subheader("Pearson Correlation Coefficients for Numerical Variables")
+    sorted_correlations = calculate_pearson_correlations(df_numerical)
+    st.table(sorted_correlations)
+
+    # 4.3.2. Spearman correlation calculation and display
+    def calculate_spearman_correlations(df):
+        correlations = []
+        for i, col1 in enumerate(df.columns):
+            for col2 in df.columns[i+1:]:
+                correlation = df[col1].corr(df[col2], method='spearman')
+                correlations.append((col1, col2, correlation))
+        correlation_df = pd.DataFrame(
+            correlations, columns=['Column 1', 'Column 2', 'Correlation'])
+        sorted_correlation_df = correlation_df.sort_values(
+            by='Correlation', ascending=False)
+        return sorted_correlation_df
+
+    st.subheader("Spearman Correlation Coefficients for Numerical Variables")
+    spearman_correlations_sorted = calculate_spearman_correlations(
+        df_numerical)
+    st.table(spearman_correlations_sorted)
+
+
+    # 4.3.4. Spearman correlation heatmap
+    def plot_sorted_spearman_heatmap(df):
+        correlation_matrix = df.corr(method='spearman')
+        fig, ax = plt.subplots(figsize=(10, 8))
+        sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm",
+                    square=True, linewidths=.5, ax=ax)
+        ax.set_title("Correlation Heatmap for Selected Numerical Variables")
+        return fig
+
+    st.subheader(
+        "Spearman Correlation Heatmap for Selected Numerical Variables")
+    fig = plot_sorted_spearman_heatmap(df_for_spearman_and_heatmap)
+    st.pyplot(fig)
