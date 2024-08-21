@@ -3,7 +3,7 @@ from backend import load_and_analyze_data, clean_and_format_dataframe, univariat
 
 
 def main():
-    st.title('Bank Churn Prediction Analysis')
+    st.title('Customer Churn Prediction')
 
     st.sidebar.title('Navigation')
     page = st.sidebar.radio("Project Process", [
@@ -11,14 +11,15 @@ def main():
 
     # Sidebar user information and navigation
     st.sidebar.markdown("&nbsp;")
-    st.sidebar.markdown("**Project realized by:**")
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("Project realized by:")
     st.sidebar.markdown("**Natalia Mikhieieva Gravereaux**")
 
     # GitHub link with clickable text
     st.sidebar.markdown(
         '<a href="https://github.com/NGravereaux" target="_blank">'
         '<img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub" style="width:30px;height:30px;">'
-        '</a> <a href="https://github.com/NGravereaux" target="_blank">https://github.com/NGravereaux</a>',
+        '</a> <a href="https://github.com/NGravereaux" target="_blank">NGravereaux</a>',
         unsafe_allow_html=True
     )
 
@@ -26,7 +27,7 @@ def main():
     st.sidebar.markdown(
         '<a href="https://www.linkedin.com/in/nmikh/" target="_blank">'
         '<img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn" style="width:30px;height:30px;">'
-        '</a> <a href="https://www.linkedin.com/in/nmikh/" target="_blank">https://www.linkedin.com/in/nmikh/</a>',
+        '</a> <a href="https://www.linkedin.com/in/nmikh/" target="_blank">nmikh</a>',
         unsafe_allow_html=True
     )
 
@@ -39,9 +40,9 @@ def main():
     df_cleaned = None
 
     if page == "About Project":
-        st.header("About the Project")
+        st.header("🔚🏃💼")
         st.markdown("""
-        ## Bank Churn Prediction 🔚🏃💼🚪❌
+        ### Customer Churn Prediction in the Banking Sector Using Machine Learning-Based Classification Models 
 
         This project focuses on predicting customer churn in a bank. Churn refers to customers leaving the bank, and predicting it is crucial for businesses to take preemptive actions to retain valuable customers. The data used in this project is a set of features that describe the customers' demographics, their relationship with the bank, and their financial status. By applying various machine learning models, we aim to predict whether a customer will churn based on these features.
 
