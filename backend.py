@@ -142,7 +142,7 @@ def clean_and_format_dataframe(df, integer_columns):
     return df_cleaned, df_cleaned_path
 
 
-# Functions for Univariate Analysis
+# Function for Univariate Analysis
 def univariate_analysis(df_cleaned):
     # 3.1. Separate categorical and numerical columns
     categorical_columns = ['geography', 'gender', 'tenure',
@@ -151,6 +151,9 @@ def univariate_analysis(df_cleaned):
 
     df_categorical = df_cleaned[categorical_columns]
     df_numerical = df_cleaned[numerical_columns]
+    st.subheader("Define Categorical and Numerical Variables")
+    st.write(f"Categorical Variables: {df_categorical.columns}.")
+    st.write(f"Numerical Variables: {df_numerical.columns}.")
 
     # 3.2. Categorical variables. Frequency tables: counts and proportions
     def generate_frequency_proportion_tables(df_categorical):
@@ -172,49 +175,50 @@ def univariate_analysis(df_cleaned):
             frequency_proportion_results[col] = result_table
 
         return frequency_proportion_results
+    st.subheader(
+        "Frequency and Proportion Tables for Categorical Variables")
+    frequency_proportion_tables = generate_frequency_proportion_tables(
+        df_categorical)
+    for col, table in frequency_proportion_tables.items():
+        st.write(f"{col}:\n")
+        st.table(table)
+    st.markdown("""
+        **Inference from Frequency Proportion Results**
+        - **Geography:** France has the largest customer base (50%), with Germany and Spain equally represented (25% each).
+        - **Gender:** The customer base is slightly male-dominated (55% male, 45% female).
+        - **Tenure:** Tenure is evenly spread across the first nine years, with fewer customers at 10 years (5%) and new customers (4%).
+        - **Number of Products:** Most customers use 1 or 2 products (96%), with very few using 3 or 4 products (4%).
+        - **Has Credit Card:** The majority of customers (71%) have a credit card.
+        - **Is Active Member:** The customer base is evenly split between active (51%) and inactive (49%) members.
+        - **Exited:** Most customers have not churned (80%), exited (20%).
+        """)
 
     # 3.3. Categorical variables. Barplots
-    def plot_categorical_barplots(df_categorical):
-        num_cols = 3
-        num_plots = len(df_categorical.columns)
-        num_rows = math.ceil(num_plots / num_cols)
-
-        fig, ax = plt.subplots(
-            num_rows, num_cols, figsize=(num_cols * 5, num_rows * 5))
-        ax = ax.flatten()
-
-        for i, col in enumerate(df_categorical.columns):
-            sns.countplot(data=df_categorical, x=col, ax=ax[i])
-            ax[i].set_title(f'Distribution of {col}')
-            ax[i].set_xlabel(col)
-            ax[i].set_ylabel('Count')
-            plt.xticks(rotation=45)
-
-        plt.tight_layout()
-        return fig
+    st.subheader("Plot Categorical Barplots")
+    categorical_barplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/1_univariate_plot_categorical_barplots.png'
+    st.image(categorical_barplots_url,
+             caption="categorical barplots", use_column_width=True)
 
     # 3.4. Categorical variables. Pie charts
-    def plot_categorical_pie_charts(df_categorical):
-        num_cols = 3
-        num_plots = len(df_categorical.columns)
-        num_rows = math.ceil(num_plots / num_cols)
-
-        fig, ax = plt.subplots(
-            num_rows, num_cols, figsize=(num_cols * 5, num_rows * 5))
-        ax = ax.flatten()
-
-        for i, col in enumerate(df_categorical.columns):
-            df_categorical[col].value_counts().plot.pie(
-                autopct='%1.1f%%', colors=sns.color_palette("Set3"), startangle=90, ax=ax[i])
-            ax[i].set_title(f'Distribution of {col}')
-            ax[i].set_ylabel('')  # Hide the y-label for better aesthetics
-
-        plt.tight_layout()
-        return fig
+    st.subheader("Plot Categorical Pie Charts")
+    categorical_piecharts_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/2_Univariate%20Plot%20Categorical%20Pie_charts.png'
+    st.image(categorical_piecharts_url,
+             caption="Plot Categorical Pie Charts", use_column_width=True)
 
     # 3.5. Numerical variables. Summary Statistics
+
     def summary_statistics(df_numerical):
         return pd.DataFrame(df_numerical.describe())
+    st.subheader("Summary Statistics for Numerical Variables")
+    summary_stats = summary_statistics(df_numerical)
+    st.table(summary_stats)
+    st.markdown("""
+        **Inference from Summary Statistics**
+
+        - **Balance:** The minimum value for the balance column is 0.0, but the 25th percentile is also 0.0. This suggests that at least 25% of the customers have a zero balance, which could indicate that a significant portion of the customers do not use or have funds in their accounts.
+        - **Estimated Salary:** The estimated_salary column has a minimum value of 11.0, which is unusually low for a salary estimate. This could be a data entry error or an outlier. Additionally, the mean salary is 100,099.29, while the median (50th percentile) salary is 100,218.00, which suggests that the salary distribution is fairly symmetrical, but the low minimum value might still be an anomaly.
+        - **Age:** The range of age (minimum of 18 and maximum of 92) seems reasonable, but the mean age of around 39 might indicate a relatively younger customer base.
+        """)
 
     # 3.6. Numerical variables. Shape of the distribution: Skewness and Kurtosis
     def calculate_skewness_kurtosis(df_numerical):
@@ -229,73 +233,36 @@ def univariate_analysis(df_cleaned):
             results['Kurtosis'].append(kurtosis)
 
         return pd.DataFrame(results)
-
-    # 3.7. Plot Histograms for Numerical Variables
-    def plot_histograms(df_numerical):
-        num_cols = 2
-        num_plots = len(df_numerical.columns)
-        num_rows = math.ceil(num_plots / num_cols)
-
-        fig, ax = plt.subplots(num_rows, num_cols, figsize=(15, num_rows * 5))
-        ax = ax.flatten()
-
-        for i, col in enumerate(df_numerical.columns):
-            df_numerical[col].plot.hist(
-                bins=60, ax=ax[i], color="skyblue", edgecolor="black")
-            ax[i].set_title(f'Distribution of {col}')
-            ax[i].set_xlabel(col)
-            ax[i].set_ylabel('Frequency')
-
-        plt.tight_layout()
-        return fig
-
-    # 3.8. Plot Boxplots for Numerical Variables
-    def plot_boxplots(df_numerical):
-        num_cols = 2
-        num_rows = math.ceil(len(df_numerical.columns) / num_cols)
-
-        fig, ax = plt.subplots(num_rows, num_cols, figsize=(15, num_rows * 5))
-        ax = ax.flatten()
-
-        for i, column in enumerate(df_numerical.columns):
-            sns.boxplot(data=df_numerical[column], ax=ax[i], color="lightblue")
-            ax[i].set_title(f'Boxplot of {column}')
-
-        plt.tight_layout()
-        return fig
-
-    # Call all functions and display results in Streamlit
-    st.subheader("Define Categorical and Numerical Variables")
-    st.write(f"Categorical Variables: {df_categorical.columns}.")
-    st.write(f"Numerical Variables: {df_numerical.columns}.")
-
-    st.subheader(
-        "Frequency and Proportion Tables for Categorical Variables")
-    frequency_proportion_tables = generate_frequency_proportion_tables(
-        df_categorical)
-    for col, table in frequency_proportion_tables.items():
-        st.write(f"{col}:\n")
-        st.table(table)
-
-    st.subheader("Plot Categorical Barplots")
-    st.pyplot(plot_categorical_barplots(df_categorical))
-
-    st.subheader("Plot Categorical Pie Charts")
-    st.pyplot(plot_categorical_pie_charts(df_categorical))
-
-    st.subheader("Summary Statistics for Numerical Variables")
-    summary_stats = summary_statistics(df_numerical)
-    st.table(summary_stats)
-
     st.subheader("Skewness and Kurtosis for Numerical Variables")
     skewness_kurtosis = calculate_skewness_kurtosis(df_numerical)
     st.table(skewness_kurtosis)
+    st.markdown("""
+        **Interpretation of Shape of the Distribution Analysis**
 
+        1. **Skewness (Shape of the Distribution)**
+            - Skewness = 0: Symmetrical distribution (No action needed).
+            - Skewness > 0: Right-skewed (Consider log or square root transformation).
+            - Skewness < 0: Left-skewed (Consider inverse or square transformation).
+            - -0.5 to 0.5: Fairly symmetrical (Generally acceptable).
+            - -1 to -0.5 or 0.5 to 1: Moderately skewed (Might require transformation).
+            - <-1 or >1: Highly skewed (Transformation recommended).
+
+        2. **Kurtosis (Outliers)**
+            - Kurtosis = 3: Normal distribution (No action needed).
+            - Kurtosis > 3: Heavy tails (Check for outliers, consider robust methods).
+            - Kurtosis < 3: Light tails (Typically acceptable, fewer outliers).
+        """)
+
+    # 3.7. Plot Histograms for Numerical Variables
     st.subheader("Plot Histograms for Numerical Variables")
-    st.pyplot(plot_histograms(df_numerical))
+    histograms_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/3_Univariate_Plot%20Histograms%20for%20Numerical%20Variables.png'
+    st.image(histograms_url, caption="Plot Histograms for Numerical Variables",
+             use_column_width=True)
 
+    # 3.8. Plot Boxplots
     st.subheader("Plot Boxplots")
-    st.pyplot(plot_boxplots(df_numerical))
+    boxplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/4_Univariate_Plot%20Boxplots.png'
+    st.image(boxplots_url, caption="Plot Boxplots", use_column_width=True)
 
 
 def bivariate_analysis1(df_categorical):
@@ -542,7 +509,8 @@ def feature_engineering(df_cleaned):
         credit_score_labels = ['E', 'D', 'C', 'B', 'A']
         df['credit_score_cat'] = pd.cut(
             df['credit_score'], bins=credit_score_bins, labels=credit_score_labels, right=True)
-        st.write("Categorized `credit_score` into `credit_score_cat`:'E', 'D', 'C', 'B', 'A'")
+        st.write(
+            "Categorized `credit_score` into `credit_score_cat`:'E', 'D', 'C', 'B', 'A'")
 
         # Categorize age into segments
         age_bins = [17, 25, 35, 45, 55, 65, np.inf]
@@ -569,7 +537,8 @@ def feature_engineering(df_cleaned):
         salary_labels = ['A', 'B', 'C', 'D', 'E']
         df['salary_cat'] = pd.cut(
             df['estimated_salary'], bins=salary_bins, labels=salary_labels, right=False)
-        st.write("Categorized `estimated_salary` into `salary_cat`: 'A', 'B', 'C', 'D', 'E'")
+        st.write(
+            "Categorized `estimated_salary` into `salary_cat`: 'A', 'B', 'C', 'D', 'E'")
 
         # Drop unnecessary columns
         df = df.drop(columns=['row_number', 'customer_id', 'surname'], axis=1)
@@ -638,12 +607,11 @@ def feature_engineering(df_cleaned):
         columns=['credit_score', 'age', 'tenure', 'balance', 'estimated_salary'])
     st.write("Dropped original non-categorical columns: `credit_score`, `age`, `tenure`, `balance`, `estimated_salary`")
     st.dataframe(df_final.head())
-    
-        # Save the final DataFrame
+
+    # Save the final DataFrame
     df_final_path = './df_final.csv'
     df_final.to_csv(df_final_path, index=False)
     st.subheader("Final DataFrame Saved")
     st.write(f"The final DataFrame has been saved to: {df_final_path}")
 
     return df_final
-

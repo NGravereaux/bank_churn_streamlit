@@ -136,42 +136,14 @@ def main():
         - 3.2. Categorical variables. Frequency tables: counts and proportions
         - 3.3. Categorical variables. Barplots
         - 3.4. Categorical variables. Pie charts
+        - 3.5. Numerical variables. Summary Statistics
+        - 3.6. Numerical variables. Shape of the distribution: Skewness and Kurtosis
+        - 3.7. Plot Histograms for Numerical Variables
+        - 3.8. Plot Boxplots
                 """)
 
         # Add a horizontal line divider
         st.markdown("---")
-        st.markdown("""
-        **Inference from Frequency Proportion Results**
-
-        - **Geography:** France has the largest customer base (50%), with Germany and Spain equally represented (25% each).
-        - **Gender:** The customer base is slightly male-dominated (55% male, 45% female).
-        - **Tenure:** Tenure is evenly spread across the first nine years, with fewer customers at 10 years (5%) and new customers (4%).
-        - **Number of Products:** Most customers use 1 or 2 products (96%), with very few using 3 or 4 products (4%).
-        - **Has Credit Card:** The majority of customers (71%) have a credit card.
-        - **Is Active Member:** The customer base is evenly split between active (51%) and inactive (49%) members.
-        - **Exited:** Most customers have not churned (80%), exited (20%).
-
-        **Inference from Summary Statistics**
-
-        - **Balance:** The minimum value for the balance column is 0.0, but the 25th percentile is also 0.0. This suggests that at least 25% of the customers have a zero balance, which could indicate that a significant portion of the customers do not use or have funds in their accounts.
-        - **Estimated Salary:** The estimated_salary column has a minimum value of 11.0, which is unusually low for a salary estimate. This could be a data entry error or an outlier. Additionally, the mean salary is 100,099.29, while the median (50th percentile) salary is 100,218.00, which suggests that the salary distribution is fairly symmetrical, but the low minimum value might still be an anomaly.
-        - **Age:** The range of age (minimum of 18 and maximum of 92) seems reasonable, but the mean age of around 39 might indicate a relatively younger customer base.
-
-        **Interpretation of Shape of the Distribution Analysis**
-
-        1. **Skewness (Shape of the Distribution)**
-            - Skewness = 0: Symmetrical distribution (No action needed).
-            - Skewness > 0: Right-skewed (Consider log or square root transformation).
-            - Skewness < 0: Left-skewed (Consider inverse or square transformation).
-            - -0.5 to 0.5: Fairly symmetrical (Generally acceptable).
-            - -1 to -0.5 or 0.5 to 1: Moderately skewed (Might require transformation).
-            - <-1 or >1: Highly skewed (Transformation recommended).
-
-        2. **Kurtosis (Outliers)**
-            - Kurtosis = 3: Normal distribution (No action needed).
-            - Kurtosis > 3: Heavy tails (Check for outliers, consider robust methods).
-            - Kurtosis < 3: Light tails (Typically acceptable, fewer outliers).
-        """)
 
         # Check if df_cleaned is available, if not, clean the data
         if df_cleaned is None:
