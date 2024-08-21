@@ -1,5 +1,6 @@
 import streamlit as st
-from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis, bivariate_analysis1, bivariate_analysis2, bivariate_analysis3
+from PIL import Image
+from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis, bivariate_analysis1, bivariate_analysis2, bivariate_analysis3, feature_engineering
 
 
 def main():
@@ -7,7 +8,7 @@ def main():
 
     st.sidebar.title('Navigation')
     page = st.sidebar.radio("Project Process", [
-        "About Project", "Data Load & Analysis", "Clean & Format", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building"])
+        "About Project", "Data Load & Analysis", "Clean & Format", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building & Testing"])
 
     # Sidebar user information and navigation
     st.sidebar.markdown("&nbsp;")
@@ -207,6 +208,14 @@ def main():
         # Add a horizontal line divider
         st.markdown("---")
 
+        # Check if df_cleaned is available, if not, clean the data
+        if df_cleaned is None:
+            integer_columns = ['age', 'balance', 'has_cr_card',
+                               'is_active_member', 'estimated_salary']
+            df_cleaned, _ = clean_and_format_dataframe(df, integer_columns)
+        # Perform Feature Engineering
+        feature_engineering(df_cleaned)
+
     elif page == "Model Building":
         st.header("6. Model Building")
 
@@ -222,6 +231,73 @@ def main():
         """)
         # Add a horizontal line divider
         st.markdown("---")
+
+    elif page == "Model Building & Evaluation":
+        st.header("6. Model Building & Evaluation")
+
+        st.subheader("Overview")
+        st.markdown("""
+        In this phase, multiple machine learning models were built and evaluated to predict customer churn. 
+        The models included:
+        
+        - **CatBoost**
+        - **Random Forest**
+        - **XGBoost**
+        - **LightGBM**
+        - **Neural Network**
+
+        Initially, these models were trained and tested without any resampling to gauge their performance on the original data distribution.
+
+        Following this, various resampling strategies were applied to address class imbalance and enhance model performance. The resampling techniques used were:
+
+        - **Original Data**: No resampling was applied.
+        - **Undersampling**: Reducing the majority class to balance the dataset.
+        - **Oversampling**: Increasing the minority class to balance the dataset.
+        - **SMOTE**: Synthetic Minority Over-sampling Technique to create synthetic samples of the minority class.
+
+        After extensive evaluation, the best results were obtained with the **Random Forest** model using the **Original Data** strategy, demonstrating robust performance across multiple metrics.
+        """)
+    # Add Results After Resampling
+    st.subheader("Results after Resampling")
+    st.markdown("""
+        **Best performing model on cross-validation:**
+        - Fold: 2.0
+        - CV Accuracy: 0.925486
+        - CV Precision: 0.891806
+        - CV Recall: 0.968534
+        - CV F1 Score: 0.928573
+        - CV AUC: 0.975634
+        - Model: Random Forest
+        - Resampling Strategy: Oversampling
+
+        **Best performing model on test set:**
+        - Resampling Strategy: Original
+        - Model: LightGBM
+        - Test Accuracy: 0.846
+        - Test Precision: 0.730769
+        - Test Recall: 0.443925
+        - Test F1 Score: 0.552326
+        - Test AUC: 0.865342
+        """)
+
+    # Add Results After ReSampling and Tuning
+    st.subheader("Results After ReSampling and Tuning")
+    st.markdown("""
+        **Best performing model on test set:**
+        - Resampling Strategy: Original
+        - Model: Random Forest
+        - Test Accuracy: 0.8355
+        - Test Precision: 0.609272
+        - Test Recall: 0.64486
+        - Test F1 Score: 0.626561
+        - Test AUC: 0.859508
+        """)
+
+    # Display ROC Curve Image
+    st.subheader("Plot ROC AUC Curve")
+    roc_curve_image = Image.open(
+        '/Users/8mars/Documents/DATA_ANALYTICS/PROJECT/bank_churn_prediction_streamlit/roc_curve.png')
+    st.image(roc_curve_image, caption="ROC AUC Curve", use_column_width=True)
 
 
 if __name__ == '__main__':

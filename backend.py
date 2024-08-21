@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, Or
 from numpy import log1p
 from scipy.stats.contingency import association, chi2_contingency
 from pandas.plotting import scatter_matrix
+from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
 
 
 # Optional: Conditional import with logging for better debugging
@@ -141,7 +142,7 @@ def clean_and_format_dataframe(df, integer_columns):
     return df_cleaned, df_cleaned_path
 
 
-# Function for Univariate Analysis
+# Functions for Univariate Analysis
 def univariate_analysis(df_cleaned):
     # 3.1. Separate categorical and numerical columns
     categorical_columns = ['geography', 'gender', 'tenure',
@@ -515,8 +516,8 @@ def bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap):
         df_numerical)
     st.table(spearman_correlations_sorted)
 
-
     # 4.3.4. Spearman correlation heatmap
+
     def plot_sorted_spearman_heatmap(df):
         correlation_matrix = df.corr(method='spearman')
         fig, ax = plt.subplots(figsize=(10, 8))
@@ -529,3 +530,120 @@ def bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap):
         "Spearman Correlation Heatmap for Selected Numerical Variables")
     fig = plot_sorted_spearman_heatmap(df_for_spearman_and_heatmap)
     st.pyplot(fig)
+
+
+# Function for Feature Engineering
+def feature_engineering(df_cleaned):
+    # 5.1. Create new features: categorization for credit score, age, tenure, balance, and salary
+    def create_features(df):
+        st.subheader("5.1. Create New Features")
+        # Binning credit score with letters
+        credit_score_bins = [349, 579, 669, 739, 799, 851]
+        credit_score_labels = ['E', 'D', 'C', 'B', 'A']
+        df['credit_score_cat'] = pd.cut(
+            df['credit_score'], bins=credit_score_bins, labels=credit_score_labels, right=True)
+        st.write("Categorized `credit_score` into `credit_score_cat`:'E', 'D', 'C', 'B', 'A'")
+
+        # Categorize age into segments
+        age_bins = [17, 25, 35, 45, 55, 65, np.inf]
+        age_labels = ['A', 'B', 'C', 'D', 'E', 'F']
+        df['age_cat'] = pd.cut(df['age'], bins=age_bins, labels=age_labels)
+        st.write("Categorized `age` into `age_cat`:'A', 'B', 'C', 'D', 'E', 'F'")
+
+        # Categorize tenure into segments
+        tenure_bins = [-1, 3, 5, 7, np.inf]
+        tenure_labels = ['A', 'B', 'C', 'D']
+        df['tenure_cat'] = pd.cut(
+            df['tenure'], bins=tenure_bins, labels=tenure_labels)
+        st.write("Categorized `tenure` into `tenure_cat`:'A', 'B', 'C', 'D'")
+
+        # Categorize balance
+        balance_bins = [-1, 50000, 90000, 127000, np.inf]
+        balance_labels = ['A', 'B', 'C', 'D']
+        df['balance_cat'] = pd.cut(
+            df['balance'], bins=balance_bins, labels=balance_labels)
+        st.write("Categorized `balance` into `balance_cat`:'A', 'B', 'C', 'D'")
+
+        # Categorize estimated_salary into segments
+        salary_bins = [11, 40000, 80000, 120000, 160000, 200000]
+        salary_labels = ['A', 'B', 'C', 'D', 'E']
+        df['salary_cat'] = pd.cut(
+            df['estimated_salary'], bins=salary_bins, labels=salary_labels, right=False)
+        st.write("Categorized `estimated_salary` into `salary_cat`: 'A', 'B', 'C', 'D', 'E'")
+
+        # Drop unnecessary columns
+        df = df.drop(columns=['row_number', 'customer_id', 'surname'], axis=1)
+        st.write(
+            "Dropped unnecessary columns: `row_number`, `customer_id`, `surname`")
+
+        st.dataframe(df.head())
+        return df
+
+    # 5.2. Encode non-ordinal categorical variables with one_hot_encoder
+    def one_hot_encoder(df, drop_first=True):
+        st.subheader("5.2. One-Hot Encode Non-Ordinal Categorical Variables")
+        categorical_cols = ['geography']
+        df = pd.get_dummies(df, columns=categorical_cols,
+                            drop_first=drop_first, dtype=int)
+        st.write("One-hot encoded `geography` column:")
+        st.dataframe(df.head())
+        return df
+
+    # 5.3. Encode ordinal categorical variables with ordinal encoder
+    def ordinal_encoder(df):
+        st.subheader("5.3. Ordinal Encode Ordinal Categorical Variables")
+        categorical_cols = ['credit_score_cat', 'age_cat',
+                            'tenure_cat', 'balance_cat', 'salary_cat']
+
+        # Initialize the OrdinalEncoder
+        encoder = OrdinalEncoder()
+
+        # Apply the OrdinalEncoder to the specified columns
+        df[categorical_cols] = encoder.fit_transform(df[categorical_cols])
+        # Convert the encoded values to integers
+        df[categorical_cols] = df[categorical_cols].astype(int)
+
+        st.write(
+            "Ordinal encoded columns: `credit_score_cat`, `age_cat`, `tenure_cat`, `balance_cat`, `salary_cat`")
+        st.dataframe(df.head())
+        return df
+
+    # 5.4. Encode binary non-ordinal categorical variables with label_encoder
+    def label_encoder(df, info=False):
+        st.subheader(
+            "5.4. Label Encode Binary Non-Ordinal Categorical Variables")
+        binary_cols = ['gender', 'has_cr_card', 'is_active_member', 'exited']
+        labelencoder = LabelEncoder()
+
+        for col in binary_cols:
+            df[col] = labelencoder.fit_transform(df[col])
+            if info:
+                d1, d2 = labelencoder.inverse_transform([0, 1])
+                st.write(f'{col}\n0:{d1}, 1:{d2}')
+
+        st.write(
+            "Label encoded columns: `gender`, `has_cr_card`, `is_active_member`, `exited`")
+        st.dataframe(df.head())
+        return df
+
+    # Apply all transformations
+    df = create_features(df_cleaned)
+    df = one_hot_encoder(df)
+    df = ordinal_encoder(df)
+    df = label_encoder(df)
+
+    # 5.5. Assemble final dataset by dropping the original non-categorical columns
+    st.subheader("5.5. Assemble Final Dataset")
+    df_final = df.drop(
+        columns=['credit_score', 'age', 'tenure', 'balance', 'estimated_salary'])
+    st.write("Dropped original non-categorical columns: `credit_score`, `age`, `tenure`, `balance`, `estimated_salary`")
+    st.dataframe(df_final.head())
+    
+        # Save the final DataFrame
+    df_final_path = './df_final.csv'
+    df_final.to_csv(df_final_path, index=False)
+    st.subheader("Final DataFrame Saved")
+    st.write(f"The final DataFrame has been saved to: {df_final_path}")
+
+    return df_final
+
