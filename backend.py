@@ -326,38 +326,9 @@ def bivariate_analysis1(df_categorical):
     st.table(df_cramers_v_results)
 
     # 4.1.3. Stacked bar chart visualization for categorical variables
-    def plot_stacked_bar_charts_for_all_pairs(df_categorical):
-        num_plots = len(df_categorical.columns) * \
-            (len(df_categorical.columns) - 1) // 2
-        num_cols = 3
-        num_rows = (num_plots // num_cols) + (num_plots % num_cols > 0)
-        fig, axes = plt.subplots(
-            num_rows, num_cols, figsize=(20, num_rows * 5))
-        axes = axes.flatten()
-
-        plot_idx = 0
-        for i, col1 in enumerate(df_categorical.columns):
-            for col2 in df_categorical.columns[i+1:]:
-                ax = axes[plot_idx]
-                crosstab_result = pd.crosstab(
-                    df_categorical[col1], df_categorical[col2])
-                crosstab_result.plot(kind="bar", stacked=True, ax=ax)
-                ax.set_title(f'Stacked Bar Chart of {col1} vs {col2}')
-                ax.set_xlabel(col1)
-                ax.set_ylabel('Count')
-                ax.tick_params(axis='x', rotation=45)
-                plot_idx += 1
-
-        # Hide any unused subplots
-        for j in range(plot_idx, len(axes)):
-            axes[j].set_visible(False)
-
-        plt.tight_layout()
-        return fig
-
     st.subheader("Stacked Bar Charts for Categorical Variables")
-    fig = plot_stacked_bar_charts_for_all_pairs(df_categorical)
-    st.pyplot(fig)
+    stacked_bar_charts_url = 'replace?raw=true'
+    st.image(stacked_bar_charts_url, caption="Stacked Bar Charts", use_column_width=True)
 
 
 def bivariate_analysis2(df_categorical, df_numerical):
