@@ -1,5 +1,4 @@
 import streamlit as st
-from PIL import Image
 from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis, bivariate_analysis1, bivariate_analysis2, bivariate_analysis3, feature_engineering
 
 
@@ -295,9 +294,8 @@ def main():
 
     # Display ROC Curve Image
     st.subheader("Plot ROC AUC Curve")
-    roc_curve_image = Image.open(
-        '/Users/8mars/Documents/DATA_ANALYTICS/PROJECT/bank_churn_prediction_streamlit/roc_curve.png')
-    st.image(roc_curve_image, caption="ROC AUC Curve", use_column_width=True)
+    roc_curve_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/roc_curve.png?raw=true'
+    st.image(roc_curve_url, caption="ROC AUC Curve", use_column_width=True)
 
 
 if __name__ == '__main__':
