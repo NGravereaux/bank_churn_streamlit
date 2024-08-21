@@ -163,18 +163,15 @@ def main():
           - 4.1.2. Cramér's V. Test the independence of variables
           - 4.1.3. Visualization stacked bar. Analysis of proportional relationships between pairs of categorical.
           - 4.1.4. Visualization Frequency heat maps. The density or count of occurrences for combinations of two categorical variables, with color intensity indicating the frequency of each combination
-
         - 4.2. Categorical vs Continuous
           - 4.2.1. Violin Plots
           - 4.2.2. Bar Charts
           - 4.2.3. Side by side Box Plots
-
         - 4.3. Continuous vs Continuous
           - 4.3.1. Pearson Correlation coefficients
           - 4.3.2. Spearman Correlation coefficients
           - 4.3.3. Scatter plots/ pairplot
           - 4.3.4. Correlation Heatmaps
-          - 4.3.5. QQ Plot
         """)
         # Add a horizontal line divider
         st.markdown("---")

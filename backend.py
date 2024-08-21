@@ -326,98 +326,56 @@ def bivariate_analysis1(df_categorical):
     st.table(df_cramers_v_results)
 
     # 4.1.3. Stacked bar chart visualization for categorical variables
-    st.subheader("Stacked Bar Charts for Categorical Variables")
-    stacked_bar_charts_url = 'replace?raw=true'
-    st.image(stacked_bar_charts_url, caption="Stacked Bar Charts", use_column_width=True)
+    st.subheader("Categorical vs Categorical. Stacked Bar Charts")
+    stacked_bar_charts_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate_stacked_barcharts.png?raw=true'
+    st.image(stacked_bar_charts_url,
+             caption="Stacked Bar Charts", use_column_width=True)
+
+    # 4.1.4. Visualization Frequency heat maps
+    st.subheader("Categorical vs Categorical. Frequency heat maps")
+    heat_maps_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate2_heatmaps.png?raw=true'
+    st.image(heat_maps_url,
+             caption="heat maps", use_column_width=True)
 
 
 def bivariate_analysis2(df_categorical, df_numerical):
-    st.header("4.2. Categorical vs Continuous")
+    st.header("4.2. Categorical vs Numerical Variables")
 
     # 4.2.1. Violin plot visualization for categorical vs numerical variables
-    def plot_violin_plots(df_categorical, df_numerical):
-        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
-        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
-        fig, axes = plt.subplots(
-            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
-        axes = axes.flatten()
-
-        plot_index = 0
-        for cat_col in df_categorical.columns:
-            for num_col in df_numerical.columns:
-                sns.violinplot(
-                    x=df_categorical[cat_col], y=df_numerical[num_col], ax=axes[plot_index])
-                axes[plot_index].set_title(
-                    f'Violin Plot: {num_col} by {cat_col}')
-                plot_index += 1
-
-        for i in range(plot_index, len(axes)):
-            axes[i].set_visible(False)
-
-        plt.tight_layout()
-        return fig
-
-    st.subheader("Violin Plots for Categorical vs Numerical Variables")
-    fig = plot_violin_plots(df_categorical, df_numerical)
-    st.pyplot(fig)
+    st.subheader("Categorical vs Numerical Variables. Violin Plots")
+    violins_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate3_violine%20plots.png?raw=true'
+    st.image(violins_url, caption="violins", use_column_width=True)
 
     # 4.2.2. Bar chart visualization for categorical vs numerical variables
-    def plot_bar_charts(df_categorical, df_numerical):
-        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
-        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
-        fig, axes = plt.subplots(
-            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
-        axes = axes.flatten()
+    st.subheader("Categorical vs Numerical Variables. Bar Charts")
+    bar_charts_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate4_barcharts.png?raw=true'
+    st.image(bar_charts_url, caption="bar charts", use_column_width=True)
+    st.markdown("""
+    **Inference from Violin Plots and Bar Charts**
+    - Germany has the highest average balance among the three regions, at approximately 119,711.
+    - Germany also has the highest exit rate, with about 32.47% of customers having exited.
+    - This indicates that while customers in Germany tend to have higher average balances, a significant proportion of them have also exited the service. This could be an important insight for further analysis, potentially indicating that factors other than just account balance are influencing customer retention in Germany.
+    """)
 
-        plot_index = 0
-        for cat_col in df_categorical.columns:
-            for num_col in df_numerical.columns:
-                sns.barplot(
-                    x=df_categorical[cat_col], y=df_numerical[num_col], ci=None, ax=axes[plot_index])
-                axes[plot_index].set_title(
-                    f'Bar Chart: {num_col} by {cat_col}')
-                plot_index += 1
-
-        for i in range(plot_index, len(axes)):
-            axes[i].set_visible(False)
-
-        plt.tight_layout()
-        return fig
-
-    st.subheader("Bar Charts for Categorical vs Numerical Variables")
-    fig = plot_bar_charts(df_categorical, df_numerical)
-    st.pyplot(fig)
-
-    # 4.2.3. Box plot visualization for categorical vs numerical variables
-    def plot_box_plots(df_categorical, df_numerical):
-        num_plots = len(df_categorical.columns) * len(df_numerical.columns)
-        num_rows = (num_plots // 3) + (num_plots % 3 > 0)
-        fig, axes = plt.subplots(
-            nrows=num_rows, ncols=3, figsize=(18, num_rows * 6))
-        axes = axes.flatten()
-
-        plot_index = 0
-        for cat_col in df_categorical.columns:
-            for num_col in df_numerical.columns:
-                sns.boxplot(
-                    x=df_categorical[cat_col], y=df_numerical[num_col], ax=axes[plot_index])
-                axes[plot_index].set_title(f'Box Plot: {num_col} by {cat_col}')
-                plot_index += 1
-
-        for i in range(plot_index, len(axes)):
-            axes[i].set_visible(False)
-
-        plt.tight_layout()
-        return fig
-
+    # 4.2.3. Box plot visualization for categorical vs numerical variables:
     st.subheader(
         "Side-by-Side Box Plots for Categorical vs Numerical Variables")
-    fig = plot_box_plots(df_categorical, df_numerical)
-    st.pyplot(fig)
+    box_lots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate5_boxplots.png?raw=true'
+    st.image(box_lots_url, caption="Box Plots", use_column_width=True)
+    st.markdown("""
+    #### Inference from Side by Side Box Plots
+    Most significant relationships summarized in one line each:
+    - **Balance by Exited**: Customers with lower balances are more likely to have exited.
+    - **Geography/Exited (Germany)**: Germany has the highest exit rate, indicating potential regional issues.
+    - **Age by Exited**: Older customers are more likely to have exited.
+    - **Num_of_Products by Balance**: Customers with more products tend to have higher account balances.
+    - **Age by Num_of_Products**: Older customers tend to hold more products.
+    - **Balance by Is_Active_Member**: Active members generally have higher account balances.
+    """)
 
 
 def bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap):
-    st.header("4.3. Continuous vs Continuous")
+    st.header("4.3. Numerical vs Numerical Variables")
 
     # 4.3.1. Pearson correlation calculation and display
     def calculate_pearson_correlations(df):
@@ -449,25 +407,33 @@ def bivariate_analysis3(df_numerical, df_for_spearman_and_heatmap):
             by='Correlation', ascending=False)
         return sorted_correlation_df
 
-    st.subheader("Spearman Correlation Coefficients for Numerical Variables")
+    st.subheader("Numerical Variables: Spearman Correlation Coefficients ")
     spearman_correlations_sorted = calculate_spearman_correlations(
         df_numerical)
     st.table(spearman_correlations_sorted)
+    st.markdown("""
+    #### Inference from Pearson and Spearman Correlations:
+    - **Age and Exited**: Spearman's ρ = 0.324 (Moderate positive correlation)
+    - **Balance and Exited**: Spearman's ρ = 0.111 (Weak positive correlation)
+    - **Age and Balance**: Weak positive correlation (Spearman's ρ ≈ 0.033)
+    - **Balance and Estimated Salary**: Very weak positive correlation (Spearman's ρ ≈ 0.011-0.012)
+    - **Credit Score and Balance**: Very weak positive correlation (Spearman's ρ ≈ 0.006)
+    - **Credit Score and Estimated Salary**: Very weak positive correlation (Spearman's ρ ≈ 0.001)
+    - **Credit Score and Age**: Very weak negative correlation (Spearman's ρ ≈ -0.008)
+    """)
+
+    # 4.3.3. Scatter plots/ pairplot
+    st.subheader(
+        "Scatter plots/ pairplot")
+    scatter_plots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate6_scatterplot.png?raw=true'
+    st.image(scatter_plots_url, caption="Scatter plots", use_column_width=True)
 
     # 4.3.4. Spearman correlation heatmap
-
-    def plot_sorted_spearman_heatmap(df):
-        correlation_matrix = df.corr(method='spearman')
-        fig, ax = plt.subplots(figsize=(10, 8))
-        sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm",
-                    square=True, linewidths=.5, ax=ax)
-        ax.set_title("Correlation Heatmap for Selected Numerical Variables")
-        return fig
-
     st.subheader(
         "Spearman Correlation Heatmap for Selected Numerical Variables")
-    fig = plot_sorted_spearman_heatmap(df_for_spearman_and_heatmap)
-    st.pyplot(fig)
+    spearman_correlation_heatmap_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/bivariate7_spearman_heatmap.png?raw=true'
+    st.image(spearman_correlation_heatmap_url,
+             caption="Spearman Correlation Heatmap", use_column_width=True)
 
 
 # Function for Feature Engineering
