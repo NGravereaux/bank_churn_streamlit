@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from backend import load_and_analyze_data, clean_and_format_dataframe, univariate_analysis
 
@@ -6,10 +5,30 @@ from backend import load_and_analyze_data, clean_and_format_dataframe, univariat
 def main():
     st.title('Bank Churn Prediction Analysis')
 
-    # Sidebar navigation
     st.sidebar.title('Navigation')
-    page = st.sidebar.radio("Select a Step", [
-                            "About Project", "Data Load & Analysis", "Clean & Format DataFrame", "Univariate Analysis"])
+    page = st.sidebar.radio("Project Process", [
+        "About Project", "Data Load & Analysis", "Clean & Format DataFrame", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building"])
+
+    # Sidebar user information and navigation
+    st.sidebar.markdown("&nbsp;")
+    st.sidebar.markdown("**Project realized by:**")
+    st.sidebar.markdown("**Natalia Mikhieieva Gravereaux**")
+
+    # GitHub link with clickable text
+    st.sidebar.markdown(
+        '<a href="https://github.com/NGravereaux" target="_blank">'
+        '<img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub" style="width:30px;height:30px;">'
+        '</a> <a href="https://github.com/NGravereaux" target="_blank">https://github.com/NGravereaux</a>',
+        unsafe_allow_html=True
+    )
+
+    # LinkedIn link with clickable text
+    st.sidebar.markdown(
+        '<a href="https://www.linkedin.com/in/nmikh/" target="_blank">'
+        '<img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn" style="width:30px;height:30px;">'
+        '</a> <a href="https://www.linkedin.com/in/nmikh/" target="_blank">https://www.linkedin.com/in/nmikh/</a>',
+        unsafe_allow_html=True
+    )
 
     # Load data
     data_url = './bank_churn_prediction_modeling.csv'
@@ -86,7 +105,7 @@ def main():
         st.dataframe(potential_categorical_from_numerical)
 
     elif page == "Clean & Format DataFrame":
-        st.header("Clean & Format DataFrame")
+        st.header("2. Clean & Format DataFrame")
 
         st.markdown("""
         - 2.1. Dealing with Duplicates.
@@ -108,7 +127,7 @@ def main():
         st.write(df_cleaned_path)
 
     elif page == "Univariate Analysis":
-        st.header("Univariate Analysis")
+        st.header("3. Univariate Analysis")
 
         st.markdown("""
         - 3.1. Separate categorical and numerical columns
@@ -125,6 +144,53 @@ def main():
 
         # Perform univariate analysis
         univariate_analysis(df_cleaned)
+
+    elif page == "Bivariate Analysis":
+        st.header("4. Bivariate Analysis")
+
+        st.markdown("""
+        - 4.1. Categorical (including Discrete Numerical) vs Categorical
+          - 4.1.1. Chi-square test. Test the independence of variables
+          - 4.1.2. Cramér's V. Test the independence of variables
+          - 4.1.3. Visualization stacked bar. Analysis of proportional relationships between pairs of categorical.
+          - 4.1.4. Visualization Frequency heat maps. The density or count of occurrences for combinations of two categorical variables, with color intensity indicating the frequency of each combination
+
+        - 4.2. Categorical vs Continuous
+          - 4.2.1. Violin Plots
+          - 4.2.2. Bar Charts
+          - 4.2.3. Side by side Box Plots
+
+        - 4.3. Continuous vs Continuous
+          - 4.3.1. Pearson Correlation coefficients
+          - 4.3.2. Spearman Correlation coefficients
+          - 4.3.3. Scatter plots/ pairplot
+          - 4.3.4. Correlation Heatmaps
+          - 4.3.5. QQ Plot
+        """)
+
+    elif page == "Feature Engineering":
+        st.header("5. Feature Engineering")
+
+        st.markdown("""
+        - 5.1. Create new features: categorization for credit score, age, tenure, balance, salary.
+        - 5.2. Encode categorical variables.
+        - 5.3. Check and Remove highly correlated variables: (Pearson correlation coefficient > 0.8).
+        - 5.4. Assemble the final dataset (ABT).
+        """)
+
+    elif page == "Model Building":
+        st.header("6. Model Building")
+
+        st.markdown("""
+        - 6.1. Feature selection.
+        - 6.2. Data Splitting into training and testing sets.
+        - 6.3. Define features importance.
+        - 6.4. Build and evaluate 5 Models No-Resampling: CatBoost, Random Forest, XGBoost, LightGBM, Neural Network.
+        - 6.5. Hyperparameters tuning for 5 Models No-Resampling: CatBoost, Random Forest, XGBoost, LightGBM, Neural Network.
+        - 6.6. Build and evaluate 5 Models With Resampling: CatBoost, Random Forest, XGBoost, LightGBM, Neural Network.
+        - 6.7. Hyperparameters Tuning 5 Models with Resampling: CatBoost, Random Forest, XGBoost, LightGBM, Neural Network.
+        - 6.8. Plot ROC AUC curve.
+        """)
 
 
 if __name__ == '__main__':
