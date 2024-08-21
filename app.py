@@ -7,7 +7,7 @@ def main():
 
     st.sidebar.title('Navigation')
     page = st.sidebar.radio("Project Process", [
-        "About Project", "Data Load & Analysis", "Clean & Format", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building & Testing"])
+        "About Project", "Data Load & Analysis", "Clean & Format", "Univariate Analysis", "Bivariate Analysis", "Feature Engineering", "Model Building & Evaluation"])
 
     # Sidebar user information and navigation
     st.sidebar.markdown("&nbsp;")
@@ -140,6 +140,38 @@ def main():
 
         # Add a horizontal line divider
         st.markdown("---")
+        st.markdown("""
+        **Inference from Frequency Proportion Results**
+
+        - **Geography:** France has the largest customer base (50%), with Germany and Spain equally represented (25% each).
+        - **Gender:** The customer base is slightly male-dominated (55% male, 45% female).
+        - **Tenure:** Tenure is evenly spread across the first nine years, with fewer customers at 10 years (5%) and new customers (4%).
+        - **Number of Products:** Most customers use 1 or 2 products (96%), with very few using 3 or 4 products (4%).
+        - **Has Credit Card:** The majority of customers (71%) have a credit card.
+        - **Is Active Member:** The customer base is evenly split between active (51%) and inactive (49%) members.
+        - **Exited:** Most customers have not churned (80%), exited (20%).
+
+        **Inference from Summary Statistics**
+
+        - **Balance:** The minimum value for the balance column is 0.0, but the 25th percentile is also 0.0. This suggests that at least 25% of the customers have a zero balance, which could indicate that a significant portion of the customers do not use or have funds in their accounts.
+        - **Estimated Salary:** The estimated_salary column has a minimum value of 11.0, which is unusually low for a salary estimate. This could be a data entry error or an outlier. Additionally, the mean salary is 100,099.29, while the median (50th percentile) salary is 100,218.00, which suggests that the salary distribution is fairly symmetrical, but the low minimum value might still be an anomaly.
+        - **Age:** The range of age (minimum of 18 and maximum of 92) seems reasonable, but the mean age of around 39 might indicate a relatively younger customer base.
+
+        **Interpretation of Shape of the Distribution Analysis**
+
+        1. **Skewness (Shape of the Distribution)**
+            - Skewness = 0: Symmetrical distribution (No action needed).
+            - Skewness > 0: Right-skewed (Consider log or square root transformation).
+            - Skewness < 0: Left-skewed (Consider inverse or square transformation).
+            - -0.5 to 0.5: Fairly symmetrical (Generally acceptable).
+            - -1 to -0.5 or 0.5 to 1: Moderately skewed (Might require transformation).
+            - <-1 or >1: Highly skewed (Transformation recommended).
+
+        2. **Kurtosis (Outliers)**
+            - Kurtosis = 3: Normal distribution (No action needed).
+            - Kurtosis > 3: Heavy tails (Check for outliers, consider robust methods).
+            - Kurtosis < 3: Light tails (Typically acceptable, fewer outliers).
+        """)
 
         # Check if df_cleaned is available, if not, clean the data
         if df_cleaned is None:
@@ -215,9 +247,8 @@ def main():
         # Perform Feature Engineering
         feature_engineering(df_cleaned)
 
-    elif page == "Model Building":
-        st.header("6. Model Building")
-
+    elif page == "Model Building & Evaluation":
+        st.header("6. Model Building & Evaluation")
         st.markdown("""
         - 6.1. Feature selection.
         - 6.2. Data Splitting into training and testing sets.
@@ -230,9 +261,6 @@ def main():
         """)
         # Add a horizontal line divider
         st.markdown("---")
-
-    elif page == "Model Building & Evaluation":
-        st.header("6. Model Building & Evaluation")
 
         st.subheader("Overview")
         st.markdown("""
@@ -257,45 +285,45 @@ def main():
         After extensive evaluation, the best results were obtained with the **Random Forest** model using the **Original Data** strategy, demonstrating robust performance across multiple metrics.
         """)
     # Add Results After Resampling
-    st.subheader("Results after Resampling")
-    st.markdown("""
-        **Best performing model on cross-validation:**
-        - Fold: 2.0
-        - CV Accuracy: 0.925486
-        - CV Precision: 0.891806
-        - CV Recall: 0.968534
-        - CV F1 Score: 0.928573
-        - CV AUC: 0.975634
-        - Model: Random Forest
-        - Resampling Strategy: Oversampling
+        st.subheader("Results after Resampling")
+        st.markdown("""
+            **Best performing model on cross-validation:**
+            - Fold: 2.0
+            - CV Accuracy: 0.925486
+            - CV Precision: 0.891806
+            - CV Recall: 0.968534
+            - CV F1 Score: 0.928573
+            - CV AUC: 0.975634
+            - Model: Random Forest
+            - Resampling Strategy: Oversampling
 
-        **Best performing model on test set:**
-        - Resampling Strategy: Original
-        - Model: LightGBM
-        - Test Accuracy: 0.846
-        - Test Precision: 0.730769
-        - Test Recall: 0.443925
-        - Test F1 Score: 0.552326
-        - Test AUC: 0.865342
-        """)
+            **Best performing model on test set:**
+            - Resampling Strategy: Original
+            - Model: LightGBM
+            - Test Accuracy: 0.846
+            - Test Precision: 0.730769
+            - Test Recall: 0.443925
+            - Test F1 Score: 0.552326
+            - Test AUC: 0.865342
+            """)
 
-    # Add Results After ReSampling and Tuning
-    st.subheader("Results After ReSampling and Tuning")
-    st.markdown("""
-        **Best performing model on test set:**
-        - Resampling Strategy: Original
-        - Model: Random Forest
-        - Test Accuracy: 0.8355
-        - Test Precision: 0.609272
-        - Test Recall: 0.64486
-        - Test F1 Score: 0.626561
-        - Test AUC: 0.859508
-        """)
+        # Add Results After ReSampling and Tuning
+        st.subheader("Results After ReSampling and Tuning")
+        st.markdown("""
+            **Best performing model on test set:**
+            - Resampling Strategy: Original
+            - Model: Random Forest
+            - Test Accuracy: 0.8355
+            - Test Precision: 0.609272
+            - Test Recall: 0.64486
+            - Test F1 Score: 0.626561
+            - Test AUC: 0.859508
+            """)
 
-    # Display ROC Curve Image
-    st.subheader("Plot ROC AUC Curve")
-    roc_curve_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/roc_curve.png?raw=true'
-    st.image(roc_curve_url, caption="ROC AUC Curve", use_column_width=True)
+        # Display ROC Curve Image
+        st.subheader("Plot ROC AUC Curve")
+        roc_curve_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/roc_curve.png?raw=true'
+        st.image(roc_curve_url, caption="ROC AUC Curve", use_column_width=True)
 
 
 if __name__ == '__main__':
