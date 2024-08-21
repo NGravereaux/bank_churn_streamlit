@@ -195,13 +195,13 @@ def univariate_analysis(df_cleaned):
 
     # 3.3. Categorical variables. Barplots
     st.subheader("Plot Categorical Barplots")
-    categorical_barplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/1_univariate_plot_categorical_barplots.png'
+    categorical_barplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/1_univariate_plot_categorical_barplots.png?raw=true'
     st.image(categorical_barplots_url,
              caption="categorical barplots", use_column_width=True)
 
     # 3.4. Categorical variables. Pie charts
     st.subheader("Plot Categorical Pie Charts")
-    categorical_piecharts_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/2_Univariate%20Plot%20Categorical%20Pie_charts.png'
+    categorical_piecharts_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/2_Univariate%20Plot%20Categorical%20Pie_charts.png?raw=true'
     st.image(categorical_piecharts_url,
              caption="Plot Categorical Pie Charts", use_column_width=True)
 
@@ -253,15 +253,15 @@ def univariate_analysis(df_cleaned):
             - Kurtosis < 3: Light tails (Typically acceptable, fewer outliers).
         """)
 
-    # 3.7. Plot Histograms for Numerical Variables
+    # 3.7. Numerical variables. Plot Histograms for Numerical Variables
     st.subheader("Plot Histograms for Numerical Variables")
-    histograms_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/3_Univariate_Plot%20Histograms%20for%20Numerical%20Variables.png'
+    histograms_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/3_Univariate_Plot%20Histograms%20for%20Numerical%20Variables.png?raw=true'
     st.image(histograms_url, caption="Plot Histograms for Numerical Variables",
              use_column_width=True)
 
-    # 3.8. Plot Boxplots
+    # 3.8. Numerical variables. Plot Boxplots
     st.subheader("Plot Boxplots")
-    boxplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/4_Univariate_Plot%20Boxplots.png'
+    boxplots_url = 'https://github.com/NGravereaux/bank_churn_streamlit/blob/main/4_Univariate_Plot%20Boxplots.png?raw=true'
     st.image(boxplots_url, caption="Plot Boxplots", use_column_width=True)
 
 
