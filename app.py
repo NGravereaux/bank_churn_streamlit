@@ -3,7 +3,8 @@ from backend import load_and_analyze_data, clean_and_format_dataframe, univariat
 
 
 def main():
-    st.title('Customer Churn Prediction')
+    st.subheader('🎥 Customer Churn Prediction Project Presentation 🎥')
+    st.markdown("---")
 
     st.sidebar.title('Navigation')
     page = st.sidebar.radio("Project Process", [

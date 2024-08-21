@@ -30,11 +30,6 @@ except ImportError as e:
     st.error(f"Error importing some sklearn modules: {e}")
 
 
-# Ensure to define and check your environment, Python version, and package versions
-import sys
-st.write(f"Python version: {sys.version}")
-st.write(f"NumPy version: {np.__version__}")
-
 
 # Function to load and analyze data
 def load_and_analyze_data(file_path):
